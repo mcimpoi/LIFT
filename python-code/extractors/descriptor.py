@@ -1,80 +1,26 @@
-# compute_descriptor.py ---
-#
-# Filename: compute_descriptor.py
-# Description:
-# Author: Kwang
-# Maintainer:
-# Created: Thu Feb 18 19:49:09 2016 (+0100)
-# Version:
-# Package-Requires: ()
-# URL:
-# Doc URL:
-# Keywords:
-# Compatibility:
-#
-#
+from scipy.io.matlab import savemat
 
-# Commentary:
-#
-#
-#
-#
-
-# Change Log:
-#
-#
-#
-# Copyright (C), EPFL Computer Vision Lab.
-
-# Code:
-
-
-from __future__ import print_function
 
 import os
-import sys
 import time
+from copy import deepcopy
 
-# OpenCV
+import cv2
+import h5py
 import numpy as np
 
 from Utils.custom_types import paramGroup, paramStruct, pathConfig
 from Utils.dataset_tools import test as data_module
-from Utils.dump_tools import loadh5, saveh5
+from Utils.dump_tools import loadh5
 from Utils.solvers import Test
-
 
 DEFAULT_MODEL_DIR = os.path.expanduser('~/Workspace/research/forks/LIFT/models/picc-best/')
 
-# ------------------------------------------
-# Main routine
-if __name__ == '__main__':
 
-    # ------------------------------------------------------------------------
-    # Read arguments
-    if len(sys.argv) < 6 or len(sys.argv) > 8:
-        raise RuntimeError('USAGE: python compute_descriptor.py '
-                           '<config_file> <image_file> '
-                           '<kp_file> <output_file> <bDumpPatch> '
-                           '<bPrintTime/optional> '
-                           '<model_dir/optional> ')
-
-    config_file = sys.argv[1]
-    image_file_name = sys.argv[2]
-    kp_file_name = sys.argv[3]
-    output_file = sys.argv[4]
-    bDumpPatch = bool(int(sys.argv[5]))
-    if len(sys.argv) >= 7:
-        bPrintTime = bool(int(sys.argv[6]))
-    else:
-        bPrintTime = False
-    if len(sys.argv) >= 8:
-        model_dir = sys.argv[7]
-    else:
-        model_dir = None
-
+def compute_descriptors(config_file, image_file_name, kp_file_name, output_file):
     # ------------------------------------------------------------------------
     # Setup and load parameters
+    bPrintTime = False
     param = paramStruct()
     param.loadParam(config_file, verbose=True)
     pathconf = pathConfig()
@@ -85,6 +31,7 @@ if __name__ == '__main__':
             os.getenv("_LIFT_BASE_PATH", "") + "/models/base")
 
     # Use model dir if given
+    model_dir = DEFAULT_MODEL_DIR
     if model_dir is not None:
         pathconf.result = model_dir
 
@@ -131,17 +78,10 @@ if __name__ == '__main__':
         with open("../timing-code/timing.txt", "a") as timing_file:
             print("------ Descriptor Timing ------\n"
                   "Computation time for {} keypoints is {} ms\n".format(
-                      test_data_in.x.shape[0],
-                      compute_time
-                  ),
-                  file=timing_file)
+                test_data_in.x.shape[0],
+                compute_time
+            ),
+                file=timing_file)
 
-    save_dict = {}
-    save_dict['keypoints'] = test_data_in.coords
-    save_dict['descriptors'] = descs
-
-    saveh5(save_dict, output_file)
-
-
-#
-# compute_descriptor.py ends here
+    save_dict = {'keypoints': test_data_in.coords, 'descriptors': descs}
+    savemat(output_file, save_dict)

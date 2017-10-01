@@ -17,7 +17,7 @@ DEFAULT_MODEL_DIR = os.path.expanduser('~/Workspace/research/forks/LIFT/models/p
 floatX = 'float32'
 
 
-def compute_keypoints(config_file, input_image_name, output_file_name, b_save_png, num_keypoint=1000):
+def compute_keypoints(config_file, input_image_name, output_file_name, b_save_png, num_keypoint=3000):
 
     total_time = 0
     #bUseTheano = bool(int(sys.argv[5]))
