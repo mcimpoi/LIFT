@@ -10,6 +10,10 @@ CONFIG_FILE = join(PROJECT_DIR, 'models', 'configs', 'picc-finetune-nopair.confi
 INPUT_DIR = expanduser('~/Downloads/query/iphone7/')
 OUTPUT_DIR = expanduser('~/Downloads/query/iphone7/results/')
 
+INPUT_DIR = expanduser('/local/data/mircea/query/iphone7/')
+OUTPUT_DIR = expanduser('/local/data/mircea/query/iphone7/results/')
+
+
 #INPUT_DIR = '/home/mircea/Workspace/research/at_geometricverification/data'
 #OUTPUT_DIR = '/home/mircea/Workspace/research/at_geometricverification/data/descr'
 

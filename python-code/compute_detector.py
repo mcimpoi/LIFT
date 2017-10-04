@@ -33,7 +33,7 @@ from __future__ import print_function
 
 import os
 import sys
-from .extractors.detector import compute_keypoints
+from extractors.detector import compute_keypoints
 
 
 DEFAULT_MODEL_DIR = '' # TODO: put model dir here
